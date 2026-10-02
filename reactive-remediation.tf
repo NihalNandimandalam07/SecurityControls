@@ -3,7 +3,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_iam_role" "reactive_lambda_role" {
-  name = "config-role-detection${random_id.suffix.hex}"
+  name = "config-role-reactive"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -25,7 +25,7 @@ resource "aws_iam_role_policy_attachment" "reactive_lambda_role_policy_attachmen
 }
 
 resource "aws_iam_role_policy" "reactive_lambda_role_policy" {
-  name = "config-role-policy-detection${random_id.suffix.hex}"
+  name = "config-role-policy-reactive"
   role = aws_iam_role.reactive_lambda_role.id
 
   policy = jsonencode({
@@ -59,7 +59,7 @@ data "archive_file" "reactive_lambda_zip" {
 }
 
 resource "aws_lambda_function" "reactive_lambda" {
-  function_name = "config-lambda-reactive-${random_id.suffix.hex}"
+  function_name = "config-lambda-reactive"
   role          = aws_iam_role.reactive_lambda_role.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.13"
