@@ -17,7 +17,7 @@ resource "aws_ssm_document" "s3_public_remediation" {
     }
     mainSteps = [
       {
-        action = "aaws:invokeLambdaFunction"
+        action = "aws:invokeLambdaFunction"
         name   = "enableVersioning"
         inputs = {
           FunctionName = aws_lambda_function.reactive_lambda.arn
@@ -61,7 +61,7 @@ resource "aws_iam_role_policy" "remediation_role_policy" {
         Action = [
           "lambda:InvokeFunction"
         ]
-        Resource = "aws_lambda_function.reactive_lambda.arn"
+        Resource = aws_lambda_function.reactive_lambda.arn
       }
     ]
   })
@@ -72,6 +72,9 @@ resource "aws_config_remediation_configuration" "s3_public_remediation" {
   target_id        = aws_ssm_document.s3_public_remediation.name
   target_type      = "SSM_DOCUMENT"
   automatic        = true
+
+  maximum_automatic_attempts = 3
+  retry_attempt_seconds      = 60
 
   parameter {
     name         = "AutomationAssumeRole"

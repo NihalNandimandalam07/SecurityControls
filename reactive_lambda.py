@@ -9,10 +9,10 @@ def lambda_handler(event, context):
     print("Received remediation event:")
     print(json.dumps(event))
 
-    bucket_name = event.get("bucket_name")
+    bucket_name = event.get("bucketName")
 
     if not bucket_name:
-        raise ValueError("bucket_name was not provided")
+        raise ValueError("bucketName was not provided")
 
     # Double-check classification before making any change
     try:

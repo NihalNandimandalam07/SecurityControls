@@ -61,7 +61,7 @@ data "archive_file" "reactive_lambda_zip" {
 resource "aws_lambda_function" "reactive_lambda" {
   function_name = "config-lambda-reactive"
   role          = aws_iam_role.reactive_lambda_role.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "reactive_lambda.lambda_handler"
   runtime       = "python3.13"
   filename      = data.archive_file.reactive_lambda_zip.output_path
 
