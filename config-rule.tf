@@ -1,5 +1,5 @@
 resource "aws_config_config_rule" "s3_public_rule" {
-  name = "s3-public-data-classification-detection-${random_id.suffix.hex}"
+  name = "s3-public-data-classification-detection"
 
   scope {
     compliance_resource_types = ["AWS::S3::Bucket"]
