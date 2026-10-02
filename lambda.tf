@@ -1,9 +1,7 @@
-resource "random_id" "suffix" {
-  byte_length = 4
-}
+
 
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-role-detection-${random_id.suffix.hex}"
+  name = "lambda-role-detection"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -26,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "lambda_role_policy_attachment" {
 
 
 resource "aws_iam_role_policy" "lambda_role_policy" {
-  name = "lambda-role-policy-detection-${random_id.suffix.hex}"
+  name = "lambda-role-policy-detection"
   role = aws_iam_role.lambda_role.id
 
   policy = jsonencode({
@@ -60,7 +58,7 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "config_lambda" {
-  function_name = "config-lambda-detection-${random_id.suffix.hex}"
+  function_name = "config-lambda-detection"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.13"
