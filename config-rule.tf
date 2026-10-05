@@ -1,3 +1,5 @@
+/*
+
 #config rule for first detection
 resource "aws_config_config_rule" "s3_versioning_rule" {
   name = "s3-versioning-detection"
@@ -43,3 +45,5 @@ resource "aws_config_config_rule" "s3_encryption_rule" {
     aws_lambda_permission.allow_encryption_config
   ]
 }
+
+*/

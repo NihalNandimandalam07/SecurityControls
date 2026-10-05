@@ -72,13 +72,14 @@ resource "aws_lambda_function" "config_versioning_lambda" {
   ]
 }
 
-
+/*
 resource "aws_lambda_permission" "allow_versioning_config" {
   statement_id  = "AllowExecutionFromConfig"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.config_versioning_lambda.function_name
   principal     = "config.amazonaws.com"
 }
+*/
 
 
 
@@ -155,12 +156,14 @@ resource "aws_lambda_function" "encryption_config_lambda" {
   ]
 }
 
+
+/*
 resource "aws_lambda_permission" "allow_encryption_config" {
   statement_id  = "AllowExecutionFromConfig"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.encryption_config_lambda.function_name
   principal     = "config.amazonaws.com"
 }
-
+*/
 
 

@@ -67,6 +67,7 @@ resource "aws_iam_role_policy" "remediation_role_policy" {
   })
 }
 
+/*
 resource "aws_config_remediation_configuration" "s3_public_remediation" {
   config_rule_name = var.detective_config_config_rule_1
   target_id        = aws_ssm_document.s3_public_remediation.name
@@ -91,6 +92,7 @@ resource "aws_config_remediation_configuration" "s3_public_remediation" {
     aws_ssm_document.s3_public_remediation
   ]
 }
+*/
 
 
 
@@ -164,6 +166,7 @@ resource "aws_iam_role_policy" "remediation_encryption_role_policy" {
   })
 }
 
+/*
 resource "aws_config_remediation_configuration" "s3_encryption_remediation" {
   config_rule_name = var.detective_config_config_rule_2
   target_id        = aws_ssm_document.s3_encryption_remediation.name
@@ -188,3 +191,4 @@ resource "aws_config_remediation_configuration" "s3_encryption_remediation" {
     aws_ssm_document.s3_encryption_remediation
   ]
 }
+*/
