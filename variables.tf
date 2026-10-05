@@ -4,7 +4,12 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-variable "detective_config_config_rule" {
+variable "detective_config_config_rule_1" {
   type    = string
-  default = "s3-public-data-classification-detection"
+  default = "s3-versioning-detection"
+}
+
+variable "detective_config_config_rule_2" {
+  type    = string
+  default = "s3-encryption-detection"
 }
