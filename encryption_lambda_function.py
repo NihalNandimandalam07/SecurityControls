@@ -92,9 +92,8 @@ def lambda_handler(event, context):
 
     else:
 
-        compliance, 
-        annotation = evaluate_bucket(
-                resource_id
+        compliance, annotation = evaluate_bucket(
+            resource_id
         )
 
     config.put_evaluations(
