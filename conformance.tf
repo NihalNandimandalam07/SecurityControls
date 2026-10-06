@@ -1,4 +1,4 @@
-
+/*
 resource "aws_lambda_permission" "allow_encryption_config" {
   statement_id  = "AllowExecutionFromConfig"
   action        = "lambda:InvokeFunction"
@@ -37,3 +37,4 @@ resource "aws_config_conformance_pack" "s3_conformance_pack" {
     aws_lambda_permission.allow_encryption_config
   ]
 }
+*/
