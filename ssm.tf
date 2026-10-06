@@ -30,6 +30,40 @@ resource "aws_ssm_document" "s3_public_remediation" {
   })
 }
 
+#ssm document for the conformance pack
+resource "aws_ssm_document" "s3_conformance_remediation" {
+  name          = "s3-conformance-remediation"
+  document_type = "Automation"
+
+  content = jsonencode({
+    schemaVersion = "0.3"
+    assumeRole    = "{{ AutomationAssumeRole }}"
+
+    parameters = {
+      AutomationAssumeRole = {
+        type = "String"
+      }
+      bucketName = {
+        type = "String"
+      }
+    }
+    mainSteps = [
+      {
+        action = "aws:executeAwsApi"
+        name   = "enableVersioning"
+        inputs = {
+          Service = "S3"
+          Api     = "PutBucketVersioning"
+          Bucket  = "{{ bucketName }}"
+          VersioningConfiguration = {
+            Status = "Enabled"
+          }
+        }
+      }
+    ]
+  })
+}
+
 
 resource "aws_iam_role" "remediation_role" {
   name = "config-role-remediation"
@@ -69,7 +103,7 @@ resource "aws_iam_role_policy" "remediation_role_policy" {
 
 
 resource "aws_config_remediation_configuration" "s3_public_remediation" {
-  config_rule_name = var.detective_config_config_rule_1
+  config_rule_name = aws_config_config_rule.s3_versioning_rule.name
   target_id        = aws_ssm_document.s3_public_remediation.name
   target_type      = "SSM_DOCUMENT"
   automatic        = true
@@ -88,6 +122,7 @@ resource "aws_config_remediation_configuration" "s3_public_remediation" {
   }
 
   depends_on = [
+    aws_config_config_rule.s3_versioning_rule,
     aws_iam_role_policy.remediation_role_policy,
     aws_ssm_document.s3_public_remediation
   ]

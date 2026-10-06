@@ -22,67 +22,37 @@ resource "aws_config_conformance_pack" "s3_conformance_pack" {
           }
         }
       }
-      S3VersioningRemediationDocument = {
-        Type = "AWS::SSM::Document"
+      S3VersioningRemediation = {
+        Type = "AWS::Config::RemediationConfiguration"
         Properties = {
-          DocumentType = "Automation"
-          Content = {
-            schemaVersion = "0.3"
-            assumeRole    = "{{ AutomationAssumeRole }}"
-            parameters = {
-              AutomationAssumeRole = {
-                type = "String"
-              }
-              bucketName = {
-                type = "String"
+          ConfigRuleName = "S3VersioningRule"
+          TargetType     = "SSM_DOCUMENT"
+          TargetId       = aws_ssm_document.s3_conformance_remediation.name
+          Automatic      = true
+
+          MaximumAutomaticAttempts = 5
+          RetryAttemptSeconds      = 60
+
+          Parameters = {
+            AutomationAssumeRole = {
+              StaticValue = {
+                Values = [aws_iam_role.remediation_role.arn]
               }
             }
-            mainSteps = [
-              {
-                action = "aws:executeAwsApi"
-                name   = "enableVersioning"
-                inputs = {
-                  Service = "s3"
-                  Api     = "putBucketVersioning"
-                  Bucket  = "{{ bucketName }}"
-                  VersioningConfiguration = {
-                    Status = "Enabled"
-                  }
-                }
+            bucketName = {
+              ResourceValue = {
+                Value = "RESOURCE_ID"
               }
-            ]
+            }
           }
         }
-      }
-      S3VersioningRemediation = {
-      Type = "AWS::Config::RemediationConfiguration"
-      Properties = {
-        ConfigRuleName = "S3VersioningRule"
-        TargetType = "SSM_DOCUMENT"
-        TargetId = aws_ssm_document.s3_public_remediation.name
-        Automatic = true
-
-        MaximumAutomaticAttempts = 5
-        RetryAttemptSeconds = 60
-
-        Parameters = {
-          AutomationAssumeRole = {
-            StaticValue = {
-              Values = [aws_iam_role.remediation_role.arn]
-            }
-          }
-          bucketName = {
-            ResourceValue = {
-              Value = "RESOURCE_ID"
-            }
-          }
-        }        
-      }
-  }}
-})
+    } }
+  })
 
 
   depends_on = [
-    aws_lambda_permission.allow_versioning_config
+    aws_lambda_permission.allow_versioning_config,
+    aws_ssm_document.s3_conformance_remediation,
+    aws_iam_role_policy.remediation_role_policy
   ]
 }
