@@ -34,21 +34,21 @@ def versioning_enabled(bucket_name):
 def evaluate_bucket(bucket_name):
     classification = get_classification(bucket_name)
 
-    if classification != "Public":
+    if classification != "Test":
         return (
             "NOT_APPLICABLE",
-            "Bucket is not classified as Public."
+            "Bucket is not classified as a Test bucket."
         )
 
     if not versioning_enabled(bucket_name):
         return (
             "NON_COMPLIANT",
-            "Public bucket must have versioning enabled."
+            "Test bucket must have versioning enabled."
         )
 
     return (
         "COMPLIANT",
-        "Public bucket has versioning enabled."
+        "Test bucket has versioning enabled."
     )
 
 

@@ -34,13 +34,13 @@ def lambda_handler(event, context):
     print(f"Bucket: {bucket_name}")
     print(f"Classification: {classification}")
 
-    if classification != "Public":
-        print("Bucket is not classified as Public. No remediation performed.")
+    if classification != "Test":
+        print("Bucket is not classified as a Test bucket. No remediation performed.")
 
         return {
             "bucket": bucket_name,
             "action": "NO_ACTION",
-            "reason": "Bucket is not classified as Public"
+            "reason": "Bucket is not classified as a Test bucket"
         }
 
     # Check current versioning

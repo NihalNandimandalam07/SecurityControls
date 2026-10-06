@@ -1,11 +1,3 @@
-/*
-resource "aws_lambda_permission" "allow_versioning_config" {
-  statement_id  = "AllowExecutionFromConfig"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.config_versioning_lambda.function_name
-  principal     = "config.amazonaws.com"
-}
-
 resource "aws_config_conformance_pack" "s3_conformance_pack" {
   name = "s3-conformance-pack"
 
@@ -30,11 +22,33 @@ resource "aws_config_conformance_pack" "s3_conformance_pack" {
           }
         }
       }
-  }
+      S3VersioningRemediation = {
+        Type = "AWS::Config::RemediationConfiguration"
+        Properties = {
+          ConfigRuleName = {
+            Ref = "S3VersioningRule"
+          }
+          TargetType = "SSM_DOCUMENT"
+          TargetId = aws_ssm_document.s3_public_remediation.name
+          Automatic = true
+          Parameters = {
+            AutomationAssumeRole = {
+              StaticValue = {
+                Values = [aws_iam_role.remediation_role.arn]
+              }
+            }
+            bucketName = {
+              StaticValue = {
+                Values = "RESOURCE_ID"
+              }
+            }
+          }
+        
+      }
+  }}
 })
 
   depends_on = [
     aws_lambda_permission.allow_versioning_config
   ]
 }
-*/
