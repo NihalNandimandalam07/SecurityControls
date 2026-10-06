@@ -22,31 +22,65 @@ resource "aws_config_conformance_pack" "s3_conformance_pack" {
           }
         }
       }
-      S3VersioningRemediation = {
-        Type = "AWS::Config::RemediationConfiguration"
+      S3VersioningRemediationDocument = {
+        Type = "AWS::SSM::Document"
         Properties = {
-          ConfigRuleName = {
-            Ref = "S3VersioningRule"
-          }
-          TargetType = "SSM_DOCUMENT"
-          TargetId = aws_ssm_document.s3_public_remediation.name
-          Automatic = true
-          Parameters = {
-            AutomationAssumeRole = {
-              StaticValue = {
-                Values = [aws_iam_role.remediation_role.arn]
+          DocumentType = "Automation"
+          Content = {
+            schemaVersion = "0.3"
+            assumeRole    = "{{ AutomationAssumeRole }}"
+            parameters = {
+              AutomationAssumeRole = {
+                type = "String"
+              }
+              bucketName = {
+                type = "String"
               }
             }
-            bucketName = {
-              StaticValue = {
-                Values = "RESOURCE_ID"
+            mainSteps = [
+              {
+                action = "aws:executeAwsApi"
+                name   = "enableVersioning"
+                inputs = {
+                  Service = "s3"
+                  Api     = "putBucketVersioning"
+                  Bucket  = "{{ bucketName }}"
+                  VersioningConfiguration = {
+                    Status = "Enabled"
+                  }
+                }
               }
+            ]
+          }
+        }
+      }
+      S3VersioningRemediation = {
+      Type = "AWS::Config::RemediationConfiguration"
+      Properties = {
+        ConfigRuleName = "S3VersioningRule"
+        TargetType = "SSM_DOCUMENT"
+        TargetId = aws_ssm_document.s3_public_remediation.name
+        Automatic = true
+
+        MaximumAutomaticAttempts = 5
+        RetryAttemptSeconds = 60
+
+        Parameters = {
+          AutomationAssumeRole = {
+            StaticValue = {
+              Values = [aws_iam_role.remediation_role.arn]
             }
           }
-        
+          bucketName = {
+            ResourceValue = {
+              Value = "RESOURCE_ID"
+            }
+          }
+        }        
       }
   }}
 })
+
 
   depends_on = [
     aws_lambda_permission.allow_versioning_config
