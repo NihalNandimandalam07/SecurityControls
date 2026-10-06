@@ -6,3 +6,4 @@
 crash.log
 *.tfvars
 *.zip
+.terraform.lock.hcl
