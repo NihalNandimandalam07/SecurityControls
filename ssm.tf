@@ -49,15 +49,13 @@ resource "aws_ssm_document" "s3_conformance_remediation" {
     }
     mainSteps = [
       {
-        action = "aws:executeAwsApi"
+        action = "aws:invokeLambdaFunction"
         name   = "enableVersioning"
         inputs = {
-          Service = "S3"
-          Api     = "PutBucketVersioning"
-          Bucket  = "{{ bucketName }}"
-          VersioningConfiguration = {
-            Status = "Enabled"
-          }
+          FunctionName = aws_lambda_function.reactive_lambda.arn
+          Payload = jsonencode({
+            bucketName = "{{ bucketName }}"
+          })
         }
       }
     ]
